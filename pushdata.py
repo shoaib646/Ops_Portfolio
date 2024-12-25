@@ -58,5 +58,5 @@ if __name__ == "__main__":
     Dataobject = NetworkDataExtractor()
     records = Dataobject.csv2json()
     noofrecords = Dataobject.pushdata2mongo(records)
-    print(noofrecords)
+    print("No of Records in MongoDB:",noofrecords)
 
