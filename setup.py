@@ -25,8 +25,8 @@ def get_requirements() -> List[str]:
 setup(
     name="cybersecurity",
     version="0.0.1",
-    author="shoaib shaikh",
-    author_email="shoowaib95@gmail.com",
+    author="cruzai",
+    author_email="cruzai.contact@gmail.com",
     packages=find_packages(),
     install_requires=get_requirements()
 )

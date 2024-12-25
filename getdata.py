@@ -1,21 +1,19 @@
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 from  dotenv import load_dotenv
+from typing import List
 import sys
 import os
 import json
 import certifi
 import pandas as pd
 import numpy as np
-import pymongo
-
-
+from pymongo.mongo_client import MongoClient
 
 load_dotenv()
 
-MongoURL = os.environ.get("MONGO_URL")
+client = MongoClient(os.environ.get("MONGO_URL"))
 ca = certifi.where()
-
 
 class NetworkDataExtractor():
 
@@ -25,7 +23,7 @@ class NetworkDataExtractor():
         except Exception as e:
             raise NetworkSecurityException(e,sys.exc_info()[2])
 
-    def csv2json(self,csv_file) -> object:
+    def csv2json(self,csv_filepath) -> List[dict]:
         """
 
         :param csv_file: 
@@ -35,7 +33,7 @@ class NetworkDataExtractor():
         except Exception as e:
             raise NetworkSecurityException(e,sys.exc_info()[2])
 
-    def pushdata2mongo(self,df) -> object:
+    def pushdata2mongo(self,db) -> int:
         """
 
         :param df: 
@@ -44,4 +42,8 @@ class NetworkDataExtractor():
             pass
         except Exception as e:
             raise NetworkSecurityException(e,sys.exc_info()[2])
+
+if __name__ == "__main__":
+    object = NetworkDataExtractor()
+    logging.log(logging.INFO, "Pinged MongoDB")
 
