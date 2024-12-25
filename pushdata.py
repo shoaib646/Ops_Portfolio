@@ -1,14 +1,14 @@
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
-from  dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
+from dotenv import load_dotenv
 from typing import List
-import sys
-import os
-import json
-import certifi
 import pandas as pd
 import numpy as np
-from pymongo.mongo_client import MongoClient
+import certifi
+import json
+import sys
+import os
 
 load_dotenv()
 
@@ -45,7 +45,8 @@ class NetworkDataExtractor():
     def pushdata2mongo(self,records) -> int:
         """
 
-        :param df: 
+        :type records: list
+        :param records:
         """
         try:
             self.collection.insert_many(records)
