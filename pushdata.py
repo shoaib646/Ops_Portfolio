@@ -1,6 +1,7 @@
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 from pymongo.mongo_client import MongoClient
+from pymongo.errors import BulkWriteError
 from dotenv import load_dotenv
 from typing import List
 import pandas as pd
@@ -12,52 +13,73 @@ import os
 
 load_dotenv()
 
-ca = certifi.where()
-
-class NetworkDataExtractor():
-
+class NetworkDataExtractor:
     def __init__(self):
-
         try:
+            mongo_url = os.environ.get("MONGO_URL")
+            csv_path = os.environ.get("CSV_PATH")
+            db_name = os.environ.get("DB_NAME")
+            collection_name = os.environ.get("COLLECTION_NAME")
 
-            self.client = MongoClient(os.environ.get("MONGO_URL"))
-            self.csv_filepath = os.environ.get("CSV_PATH")
-            self.db = self.client[os.environ.get("DB_NAME")]
-            self.collection = self.db[os.environ.get("COLLECTION_NAME")]
+            if not all([mongo_url, csv_path, db_name, collection_name]):
+                raise ValueError("Missing required environment variables.")
 
+            self.client = MongoClient(mongo_url, tlsCAFile=certifi.where())
+            self.csv_filepath = csv_path
+            self.db = self.client[db_name]
+            self.collection = self.db[collection_name]
+
+            logging.info(f"Connected to MongoDB: {mongo_url}, DB: {db_name}, Collection: {collection_name}")
         except Exception as e:
-            raise NetworkSecurityException(e,sys.exc_info()[2])
+            raise NetworkSecurityException(f"Initialization error: {e}", sys.exc_info()[2])
 
     def csv2json(self) -> List[dict]:
         """
-
-        :param csv_file: 
+        Convert a CSV file to a JSON-compatible list of dictionaries.
+        :return: List of dictionaries representing the CSV data.
         """
         try:
+            if not os.path.exists(self.csv_filepath):
+                raise FileNotFoundError(f"CSV file not found: {self.csv_filepath}")
+
             data = pd.read_csv(self.csv_filepath)
-            data.reset_index(drop=True, inplace=True)
+            if data.empty:
+                raise ValueError("CSV file is empty.")
+
+            logging.info(f"Successfully loaded CSV file: {self.csv_filepath}")
             return list(json.loads(data.T.to_json()).values())
-
-
         except Exception as e:
-            raise NetworkSecurityException(e,sys.exc_info()[2])
+            raise NetworkSecurityException(f"CSV to JSON conversion error: {e}", sys.exc_info()[2])
 
-    def pushdata2mongo(self,records) -> int:
+    def pushdata2mongo(self, records: List[dict]) -> int:
         """
+        Insert multiple records into a MongoDB collection.
+        :param records: A list of dictionaries representing MongoDB documents.
+        :return: The number of successfully inserted records.
+        """
+        if not records:
+            logging.warning("No records provided for insertion.")
+            return 0
 
-        :type records: list
-        :param records:
-        """
         try:
-            self.collection.insert_many(records)
-            logging.info("Inserted records into mongo")
-            return len(records)
+            result = self.collection.insert_many(records, ordered=False)
+            inserted_count = len(result.inserted_ids)
+            logging.info(f"Successfully inserted {inserted_count} records into collection '{self.collection.name}'.")
+            return inserted_count
+        except BulkWriteError as bwe:
+            logging.error(f"Bulk write error occurred: {bwe.details}")
+            raise NetworkSecurityException(f"Bulk write error: {bwe.details}", sys.exc_info()[2])
         except Exception as e:
-            raise NetworkSecurityException(e,sys.exc_info()[2])
+            logging.error("An error occurred while inserting records into MongoDB.")
+            raise NetworkSecurityException(e, sys.exc_info()[2])
+
 
 if __name__ == "__main__":
-    Dataobject = NetworkDataExtractor()
-    records = Dataobject.csv2json()
-    noofrecords = Dataobject.pushdata2mongo(records)
-    print("No of Records in MongoDB:",noofrecords)
+    try:
+        data_object = NetworkDataExtractor()
+        records = data_object.csv2json()
+        no_of_records = data_object.pushdata2mongo(records)
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+
 
