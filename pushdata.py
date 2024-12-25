@@ -16,6 +16,7 @@ load_dotenv()
 class NetworkDataExtractor:
     def __init__(self):
         try:
+
             mongo_url = os.environ.get("MONGO_URL")
             csv_path = os.environ.get("CSV_PATH")
             db_name = os.environ.get("DB_NAME")
@@ -30,6 +31,7 @@ class NetworkDataExtractor:
             self.collection = self.db[collection_name]
 
             logging.info(f"Connected to MongoDB: {mongo_url}, DB: {db_name}, Collection: {collection_name}")
+
         except Exception as e:
             raise NetworkSecurityException(f"Initialization error: {e}", sys.exc_info()[2])
 
@@ -39,6 +41,7 @@ class NetworkDataExtractor:
         :return: List of dictionaries representing the CSV data.
         """
         try:
+
             if not os.path.exists(self.csv_filepath):
                 raise FileNotFoundError(f"CSV file not found: {self.csv_filepath}")
 
@@ -48,6 +51,7 @@ class NetworkDataExtractor:
 
             logging.info(f"Successfully loaded CSV file: {self.csv_filepath}")
             return list(json.loads(data.T.to_json()).values())
+
         except Exception as e:
             raise NetworkSecurityException(f"CSV to JSON conversion error: {e}", sys.exc_info()[2])
 
@@ -62,6 +66,7 @@ class NetworkDataExtractor:
             return 0
 
         try:
+
             result = self.collection.insert_many(records, ordered=False)
             inserted_count = len(result.inserted_ids)
             logging.info(f"Successfully inserted {inserted_count} records into collection '{self.collection.name}'.")
@@ -69,6 +74,7 @@ class NetworkDataExtractor:
         except BulkWriteError as bwe:
             logging.error(f"Bulk write error occurred: {bwe.details}")
             raise NetworkSecurityException(f"Bulk write error: {bwe.details}", sys.exc_info()[2])
+
         except Exception as e:
             logging.error("An error occurred while inserting records into MongoDB.")
             raise NetworkSecurityException(e, sys.exc_info()[2])
