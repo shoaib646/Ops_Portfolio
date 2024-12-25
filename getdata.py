@@ -1,14 +1,20 @@
-import sys, os, json
+from networksecurity.exception.exception import NetworkSecurityException
+from networksecurity.logger.logger import logging
 from  dotenv import load_dotenv
+import sys
+import os
+import json
 import certifi
 import pandas as pd
 import numpy as np
 import pymongo
-from networksecurity.exception import NetworkSecurityException
-from networksecurity.logger.logger import logging
+
 
 
 load_dotenv()
+
+MongoURL = os.environ.get("MONGO_URL")
+ca = certifi.where()
 
 
 class NetworkDataExtractor():
@@ -38,5 +44,4 @@ class NetworkDataExtractor():
             pass
         except Exception as e:
             raise NetworkSecurityException(e,sys.exc_info()[2])
-        
-    
+
