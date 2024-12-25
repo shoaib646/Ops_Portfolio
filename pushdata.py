@@ -1,3 +1,12 @@
+"""
+Project: MLOps Portfolio Project
+Author: Shoaib Shaikh
+
+Purpose: This module is responsible to data from local system to mongodb atlas
+
+Date created:
+December 24, 2024
+"""
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 from pymongo.mongo_client import MongoClient
@@ -14,6 +23,7 @@ import os
 load_dotenv()
 
 class NetworkDataExtractor:
+
     def __init__(self):
         try:
 
