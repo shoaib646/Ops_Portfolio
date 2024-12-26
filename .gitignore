@@ -76,6 +76,7 @@ instance/
 docs/_build/
 
 Dataset
+variables
 
 # PyBuilder
 .pybuilder/
