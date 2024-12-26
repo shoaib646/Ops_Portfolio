@@ -3,4 +3,5 @@ pymongo==4.10.1
 certifi
 pandas==2.2.3
 numpy==2.2.1
+scikit-learn==1.6.0
 -e .

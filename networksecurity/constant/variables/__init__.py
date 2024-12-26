@@ -11,7 +11,7 @@ load_dotenv()
 TARGET_COL = "Result"
 PIPELINE_NAME = "SecuredURLs"
 ARTIFACT_DIR:str= 'Artifacts'
-FILENAME:str="NetworkData.csv"
+FILENAME:str="NetworkDataFormed.csv"
 
 TRAIN_FILE:str= 'train.csv'
 TEST_FILE:str= 'test.csv'

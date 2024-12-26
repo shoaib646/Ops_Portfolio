@@ -2,30 +2,24 @@ from dataclasses import dataclass
 
 @dataclass
 class DataIngestionArtifact:
-    def __init__(self):
-        pass
+    trained_file_path: str
+    test_file_path: str
 
 @dataclass
 class DataValidationArtifact:
-    def __init__(self):
-        pass
+    pass
 
 @dataclass
 class DataTransformationArtifact:
-    def __init__(self):
-        pass
+    pass
 
 @dataclass
 class ModelTrainingArtifact:
-    def __init__(self):
-        pass
+    pass
 
 @dataclass
 class ModelEvaluationArtifact:
-    def __init__(self):
-        pass
-
+    pass
 @dataclass
 class ModelRegistryArtifact:
-    def __init__(self):
-        pass
+    pass
