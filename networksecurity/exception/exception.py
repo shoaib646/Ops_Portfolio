@@ -14,10 +14,4 @@ class NetworkSecurityException(Exception):
                 f"error message [{str(self.error_message)}]")
 
 
-if __name__ == '__main__':
-    try:
-        a = 1 / 0
-        print("This will not be printed", a)
-    except Exception as e:
-        raise NetworkSecurityException(e, sys)
 
