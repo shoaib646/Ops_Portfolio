@@ -27,7 +27,7 @@ class TrainingPipeline:
         self.training_pipeline_config = TrainingPipelineConfig()
 
     # 1.
-    def start_data_ingestion(self):
+    def start_data_ingestion(self) -> DataIngestionArtifact:
         try:
             self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
             logging.info("Starting data ingestion")
@@ -36,14 +36,18 @@ class TrainingPipeline:
             logging.info(f"Data ingestion completed and artifact: {data_ingestion_artifact}")
             return data_ingestion_artifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     # 2.
-    def start_data_validation(self):
+    def start_data_validation(self, artifact:DataIngestionArtifact) -> DataValidationArtifact:
         try:
-            pass
+            data_validation_config = DataValidationConfig(training_pipeline_config=self.training_pipeline_config)
+            data_validation = DataValidation(data_validation_config=data_validation_config,artifact=artifact )
+            data_validation_artifact = data_validation.initiate_data_validation()
+            return data_validation_artifact
+
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     # 3.
     def start_data_transformation(self):
@@ -77,5 +81,7 @@ class TrainingPipeline:
     def run_pipeline(self):
         try:
             data_ingestion_artifact = self.start_data_ingestion()
+
+            data_validation = self.start_data_validation(data_ingestion_artifact)
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
