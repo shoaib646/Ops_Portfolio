@@ -1,8 +1,7 @@
 from datetime import datetime
 import os
-from networksecurity.constant import TrainingPipeline
+from networksecurity.constant import variables
 
-# print(TrainingPipeline.ARTIFACT_DIR)
 
 
 class TrainingPipelineConfig:

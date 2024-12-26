@@ -19,6 +19,7 @@ import certifi
 import json
 import sys
 import os
+from networksecurity.constant import  variables
 
 load_dotenv()
 
@@ -28,7 +29,7 @@ class NetworkDataExtractor:
         try:
 
             mongo_url = os.environ.get("MONGO_URL")
-            csv_path = os.environ.get("CSV_PATH")
+            csv_path = os.path.join("Dataset", variables.FILENAME)
             db_name = os.environ.get("DB_NAME")
             collection_name = os.environ.get("COLLECTION_NAME")
 
