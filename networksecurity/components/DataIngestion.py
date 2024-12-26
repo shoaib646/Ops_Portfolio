@@ -31,18 +31,14 @@ load_dotenv()
 class DataIngestion():
 
     def __init__(self):
-
         try:
             mongo_url = os.environ.get("MONGO_URL")
-
-
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
     def export_collection_as_df(self):
         try:
-            documents = self.collection.find()
-
+            pass
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
