@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
+from networksecurity.entity.artifact import DataIngestionArtifact
+
 load_dotenv()
 
 
@@ -12,6 +14,9 @@ TARGET_COL = "Result"
 PIPELINE_NAME = "SecuredURLs"
 ARTIFACT_DIR:str= 'Artifacts'
 FILENAME:str="NetworkDataFormed.csv"
+
+IngestionArtifactPath = "data_ingestion_artifact.pkl"
+
 
 TRAIN_FILE:str= 'train.csv'
 TEST_FILE:str= 'test.csv'
@@ -43,7 +48,7 @@ DATA_VALIDATION_DIR_NAME: str = "data_validation"
 DATA_VALIDATION_VALID_DIR: str = "validated"
 DATA_VALIDATION_INVALID_DIR: str = "invalid"
 DATA_VALIDATION_DRIFT_REPORT_DIR: str = "drift_report"
-DATA_VALIDATION_DRIFT_REPORT_FILE_NAME: str = "report.yaml"
+DATA_VALIDATION_DRIFT_REPORT_FILE_NAME: str = "driftreport.yaml"
 
 
 

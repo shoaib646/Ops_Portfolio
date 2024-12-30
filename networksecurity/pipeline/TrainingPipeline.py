@@ -1,5 +1,11 @@
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
+from networksecurity.constant import  variables
+from networksecurity.utils.Main.utils import read_yaml_file,write_yaml_file
+from networksecurity.constant.variables import SCHEMA_FILE
+import  pandas as pd
+
+import pickle
 
 
 from networksecurity.components.DataIngestion import DataIngestion
@@ -25,27 +31,37 @@ class TrainingPipeline:
     def __init__(self):
         self.data_ingestion_config = None
         self.training_pipeline_config = TrainingPipelineConfig()
+        self.__scehma_config = read_yaml_file(SCHEMA_FILE)
 
     # 1.
     def start_data_ingestion(self) -> DataIngestionArtifact:
         try:
             self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
-            logging.info("Starting data ingestion")
+            logging.info("Starting data ingestion...")
             data_ingestion = DataIngestion(data_ingestion_config=self.data_ingestion_config)
             data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
-            logging.info(f"Data ingestion completed and artifact: {data_ingestion_artifact}")
+
+            # Save the artifact for future runs
+            artifact_path = os.path.join(variables.ARTIFACT_DIR, variables.IngestionArtifactPath)
+            os.makedirs(os.path.dirname(artifact_path), exist_ok=True)
+            with open(artifact_path, "wb") as file:
+                pickle.dump(data_ingestion_artifact, file)
+
+            logging.info(f"Data ingestion completed. Artifact saved at {artifact_path}.")
             return data_ingestion_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
-    # 2.
-    def start_data_validation(self, artifact:DataIngestionArtifact) -> DataValidationArtifact:
-        try:
-            data_validation_config = DataValidationConfig(training_pipeline_config=self.training_pipeline_config)
-            data_validation = DataValidation(data_validation_config=data_validation_config,artifact=artifact )
-            data_validation_artifact = data_validation.initiate_data_validation()
-            return data_validation_artifact
 
+    # 2
+    def start_data_validation(self, LastArtifact: DataIngestionArtifact) -> DataValidationArtifact:
+        try:
+            logging.info("Starting data validation...")
+            data_validation_config = DataValidationConfig(training_pipeline_config=self.training_pipeline_config)
+            data_validation = DataValidation(data_validation_config=data_validation_config, LastArtifact=LastArtifact)
+            data_validation_artifact = data_validation.initiate_data_validation()
+            logging.info("Data validation completed.")
+            return data_validation_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
@@ -78,10 +94,66 @@ class TrainingPipeline:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
     # main.
+    # def run_pipeline(self):
+    #     try:
+    #
+    #         if os.path.exists(os.path.join(variables.ARTIFACT_DIR, variables.IngestionArtifactPath)):
+    #             logging.info("Loading existing data ingestion artifact.")
+    #         else:
+    #             data_ingestion_artifact = self.start_data_ingestion()
+    #
+    #
+    #         data_validation = self.start_data_validation(LastArtifact=data_ingestion_artifact)
+    #     except Exception as e:
+    #         raise NetworkSecurityException(e, sys)
+
     def run_pipeline(self):
         try:
-            data_ingestion_artifact = self.start_data_ingestion()
+            # Initialize variables
+            data_ingestion_artifact = None  # Proper initialization
+            ingestion_artifact_path = os.path.join(variables.ARTIFACT_DIR, variables.IngestionArtifactPath)
 
-            data_validation = self.start_data_validation(data_ingestion_artifact)
+            # Schema expectations
+            expected_numerical_cols = len(self.__scehma_config["numerical_columns"])
+            expected_total_columns = len(self.__scehma_config["columns"])
+
+            # Check for existing ingestion artifact
+            if os.path.exists(ingestion_artifact_path):
+                logging.info("Loading existing data ingestion artifact...")
+                with open(ingestion_artifact_path, "rb") as file:
+                    data_ingestion_artifact = pickle.load(file)
+
+                # Validate train and test files against schema
+                train_file, test_file = data_ingestion_artifact.trained_file_path, data_ingestion_artifact.test_file_path
+                train_columns = pd.read_csv(train_file).shape[1]
+                test_columns = pd.read_csv(test_file).shape[1]
+
+                if train_columns == expected_total_columns and test_columns == expected_total_columns:
+                    logging.info("Total columns in train and test data match the schema.")
+
+                    train_numerical_columns = pd.read_csv(train_file).select_dtypes(include="number").shape[1]
+                    test_numerical_columns = pd.read_csv(test_file).select_dtypes(include="number").shape[1]
+
+                    if train_numerical_columns == expected_numerical_cols and test_numerical_columns == expected_numerical_cols:
+                        logging.info("Numerical columns in train and test data match the schema.")
+                        logging.info("Existing data ingestion artifact matches the schema.")
+                    else:
+                        logging.warning("Numerical columns do not match the schema. Re-running data ingestion.")
+                        data_ingestion_artifact = self.start_data_ingestion()
+                else:
+                    logging.warning("Total columns do not match the schema. Connecting MongoDB for data ingestion.")
+                    data_ingestion_artifact = self.start_data_ingestion()
+            else:
+                logging.info("No existing artifact found. Starting data ingestion...")
+                data_ingestion_artifact = self.start_data_ingestion()
+
+            # Proceed to data validation
+            if data_ingestion_artifact:
+                data_validation_artifact = self.start_data_validation(LastArtifact=data_ingestion_artifact)
+                logging.info("Pipeline execution completed successfully.")
+            else:
+                raise ValueError("Data ingestion artifact is invalid or missing.")
+
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            logging.error(f"Error in running the pipeline: {str(e)}")
+            raise NetworkSecurityException(e, sys)
