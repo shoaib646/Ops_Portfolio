@@ -16,7 +16,8 @@ class TrainingPipelineConfig:
 
 
 class DataIngestionConfig:
-    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig) -> None:
+
         self.data_ingestion_dir: str = os.path.join(
             training_pipeline_config.artifact_dir, variables.DATA_INGESTION_DIR_NAME
         )
@@ -34,22 +35,36 @@ class DataIngestionConfig:
         self.database_name: str = variables.DATA_INGESTION_DATABASE_NAME
 
 class DataValidationConfig:
-    def __init__(self):
-        pass
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig) -> None:
+
+        self.data_validation_dir: str = os.path.join(training_pipeline_config.artifact_dir,
+                                                     variables.DATA_VALIDATION_DIR_NAME)
+        self.valid_data_dir: str = os.path.join(self.data_validation_dir, variables.DATA_VALIDATION_VALID_DIR)
+        self.invalid_data_dir: str = os.path.join(self.data_validation_dir,
+                                                  variables.DATA_VALIDATION_INVALID_DIR)
+        self.valid_train_file_path: str = os.path.join(self.valid_data_dir, variables.TRAIN_FILE)
+        self.valid_test_file_path: str = os.path.join(self.valid_data_dir, variables.TEST_FILE)
+        self.invalid_train_file_path: str = os.path.join(self.invalid_data_dir, variables.TRAIN_FILE)
+        self.invalid_test_file_path: str = os.path.join(self.invalid_data_dir, variables.TEST_FILE)
+        self.drift_report_file_path: str = os.path.join(
+            self.data_validation_dir,
+            variables.DATA_VALIDATION_DRIFT_REPORT_DIR,
+            variables.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME,
+        )
 
 class DataTransformationConfig:
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         pass
 
 class ModelTrainingConfig:
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         pass
 
 class ModelEvaluationConfig:
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         pass
 
 class ModelRegistryConfig:
-    def __init__(self):
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         pass
 

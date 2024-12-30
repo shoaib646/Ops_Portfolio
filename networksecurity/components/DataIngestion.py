@@ -32,6 +32,7 @@ load_dotenv()
 class DataIngestion():
 
     def __init__(self, data_ingestion_config):
+        self.mongo_client = None
         self.split_ratio = None
         try:
             self.data_ingestion_config = data_ingestion_config
