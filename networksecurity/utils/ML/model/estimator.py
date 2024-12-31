@@ -1,8 +1,6 @@
 from networksecurity.constant.variables import SAVED_MODEL_DIR, MODEL_FILE
-
 import os
 import sys
-
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 
@@ -30,7 +28,7 @@ class ModelResolver:
             self.model_dir = model_dir
 
         except Exception as e:
-            raise e
+            raise NetworkSecurityException(e,sys)
 
     def get_best_model_path(self, ) -> str:
         try:
@@ -39,7 +37,7 @@ class ModelResolver:
             latest_model_path = os.path.join(self.model_dir, f"{latest_timestamp}", MODEL_FILE)
             return latest_model_path
         except Exception as e:
-            raise e
+            raise NetworkSecurityException(e,sys)
 
     def is_model_exists(self) -> bool:
         try:
@@ -57,4 +55,4 @@ class ModelResolver:
 
             return True
         except Exception as e:
-            raise e
+            raise NetworkSecurityException(e,sys)
