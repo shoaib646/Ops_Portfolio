@@ -8,6 +8,7 @@ from networksecurity.entity.artifact import DataTransformationArtifact, ModelTra
 from networksecurity.entity.config import ModelTrainingConfig
 
 from xgboost import XGBClassifier
+from sklearn.model_selection import GridSearchCV
 
 from networksecurity.utils.ML.model.estimator import NetworkModel
 from networksecurity.utils.Main.utils import save_object, load_object
@@ -25,14 +26,42 @@ class ModelTraining:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
-    def perform_hyper_parameter_tunig(self):
-        pass
+    def perform_hyper_parameter_tuning(self, x_train, y_train):
+        """
+        Perform hyperparameter tuning using GridSearchCV.
+        """
+        try:
+            # Define hyperparameter grid
+            param_grid = {
+                'n_estimators': [100, 200, 300],
+                'max_depth': [3, 5, 7],
+                'learning_rate': [0.01, 0.1, 0.2],
+                'subsample': [0.8, 1.0],
+                'colsample_bytree': [0.8, 1.0],
+            }
+
+            xgb_clf = XGBClassifier()
+
+            grid_search = GridSearchCV(estimator=xgb_clf,
+                                       param_grid=param_grid,
+                                       scoring='f1',
+                                       cv=3,
+                                       verbose=1,
+                                       n_jobs=-1)
+
+            grid_search.fit(x_train, y_train)
+
+            # Return the best model
+            best_model = grid_search.best_estimator_
+            logging.info(f"Best hyperparameters: {grid_search.best_params_}")
+            return best_model
+        except Exception as e:
+            raise NetworkSecurityException(e, sys)
 
     def train_model(self, x_train, y_train):
         try:
-            xgb_clf = XGBClassifier()
-            xgb_clf.fit(x_train, y_train)
-            return xgb_clf
+            tuned_model = self.perform_hyper_parameter_tuning(x_train, y_train)
+            return tuned_model
         except Exception as e:
             raise e
 

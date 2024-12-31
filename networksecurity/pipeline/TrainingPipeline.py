@@ -160,11 +160,16 @@ class TrainingPipeline:
             else:
                 raise ValueError("Data Validation artifact is invalid or missing.")
 
+            print('Debug before training')
+
+
             if data_transformation_artifact:
                 model_trainer_artifact = self.model_trainer(LastArtifact=data_transformation_artifact)
                 logging.info("Model Training completed successfully.")
             else:
                 raise ValueError("Data Transformation artifact is invalid or missing.")
+
+            print('Debug After training')
 
 
         except Exception as e:
