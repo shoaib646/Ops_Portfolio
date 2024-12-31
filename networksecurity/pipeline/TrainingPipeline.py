@@ -54,7 +54,7 @@ class TrainingPipeline:
 
 
     # 2
-    def start_data_validation(self, LastArtifact: DataIngestionArtifact) -> DataValidationArtifact:
+    def start_data_validation(self, LastArtifact: DataIngestionArtifact) -> 'DataValidationArtifact':
         try:
             logging.info("Starting data validation...")
             data_validation_config = DataValidationConfig(training_pipeline_config=self.training_pipeline_config)
@@ -66,9 +66,14 @@ class TrainingPipeline:
             raise NetworkSecurityException(e, sys)
 
     # 3.
-    def start_data_transformation(self):
+    def start_data_transformation(self, LastArtifact: DataValidationArtifact) -> 'DataTransformationArtifact':
         try:
-            pass
+            data_transformation_config = DataTransformationConfig(training_pipeline_config=self.training_pipeline_config)
+            data_transformation = DataTransformation(data_transformation_config= data_transformation_config, LastArtifact=LastArtifact)
+            data_transformation_artifact = data_transformation.initiate_data_transformation()
+
+            return data_transformation_artifact
+
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
@@ -93,24 +98,12 @@ class TrainingPipeline:
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
-    # main.
-    # def run_pipeline(self):
-    #     try:
-    #
-    #         if os.path.exists(os.path.join(variables.ARTIFACT_DIR, variables.IngestionArtifactPath)):
-    #             logging.info("Loading existing data ingestion artifact.")
-    #         else:
-    #             data_ingestion_artifact = self.start_data_ingestion()
-    #
-    #
-    #         data_validation = self.start_data_validation(LastArtifact=data_ingestion_artifact)
-    #     except Exception as e:
-    #         raise NetworkSecurityException(e, sys)
 
     def run_pipeline(self):
         try:
             # Initialize variables
             data_ingestion_artifact = None  # Proper initialization
+            data_validation_artifact = None
             ingestion_artifact_path = os.path.join(variables.ARTIFACT_DIR, variables.IngestionArtifactPath)
 
             # Schema expectations
@@ -147,12 +140,24 @@ class TrainingPipeline:
                 logging.info("No existing artifact found. Starting data ingestion...")
                 data_ingestion_artifact = self.start_data_ingestion()
 
+            # print('DEBUG')
+
+
             # Proceed to data validation
             if data_ingestion_artifact:
                 data_validation_artifact = self.start_data_validation(LastArtifact=data_ingestion_artifact)
-                logging.info("Pipeline execution completed successfully.")
+                logging.info("Data Validation completed successfully.")
             else:
                 raise ValueError("Data ingestion artifact is invalid or missing.")
+
+
+            # Proceed to data Transformation
+            if data_validation_artifact:
+                data_transformation_artifact = self.start_data_transformation(LastArtifact=data_validation_artifact)
+                logging.info("Data Transformation completed successfully.")
+            else:
+                raise ValueError("Data Transformation artifact is invalid or missing.")
+
 
         except Exception as e:
             logging.error(f"Error in running the pipeline: {str(e)}")
