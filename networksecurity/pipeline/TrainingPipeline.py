@@ -78,9 +78,13 @@ class TrainingPipeline:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
     # 4.
-    def model_trainer(self):
+    def model_trainer(self, LastArtifact:DataTransformationArtifact) -> 'ModelTrainingArtifact':
         try:
-            pass
+            model_trainer_config = ModelTrainingConfig(training_pipeline_config=self.training_pipeline_config)
+            model_trainer = ModelTraining(model_trainer_config=model_trainer_config, LastArtifact=LastArtifact)
+
+            model_trainer_artifact = model_trainer.initiate_training()
+            return model_trainer_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys.exc_info()[2])
 
@@ -100,6 +104,7 @@ class TrainingPipeline:
 
 
     def run_pipeline(self):
+
         try:
             # Initialize variables
             data_ingestion_artifact = None  # Proper initialization
@@ -140,21 +145,24 @@ class TrainingPipeline:
                 logging.info("No existing artifact found. Starting data ingestion...")
                 data_ingestion_artifact = self.start_data_ingestion()
 
-            # print('DEBUG')
-
-
             # Proceed to data validation
             if data_ingestion_artifact:
                 data_validation_artifact = self.start_data_validation(LastArtifact=data_ingestion_artifact)
                 logging.info("Data Validation completed successfully.")
             else:
-                raise ValueError("Data ingestion artifact is invalid or missing.")
+                raise ValueError("Data Ingestion artifact is invalid or missing.")
 
 
             # Proceed to data Transformation
             if data_validation_artifact:
                 data_transformation_artifact = self.start_data_transformation(LastArtifact=data_validation_artifact)
                 logging.info("Data Transformation completed successfully.")
+            else:
+                raise ValueError("Data Validation artifact is invalid or missing.")
+
+            if data_transformation_artifact:
+                model_trainer_artifact = self.model_trainer(LastArtifact=data_transformation_artifact)
+                logging.info("Model Training completed successfully.")
             else:
                 raise ValueError("Data Transformation artifact is invalid or missing.")
 

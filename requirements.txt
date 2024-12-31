@@ -1,7 +1,13 @@
 python-dotenv==1.0.1
 pymongo==4.10.1
-certifi
+certifi~=2024.12.14
 pandas==2.2.3
 numpy==2.2.1
 scikit-learn==1.6.0
 -e .
+setuptools~=75.1.0
+yaml~=0.2.5
+pyyaml~=6.0.2
+dill~=0.3.8
+xgboost~=2.1.3
+scipy~=1.14.1
