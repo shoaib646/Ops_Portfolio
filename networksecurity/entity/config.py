@@ -81,7 +81,12 @@ class ModelTrainingConfig:
 
 class ModelEvaluationConfig:
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
-        pass
+        self.model_evaluation_dir: str = os.path.join(
+            training_pipeline_config.artifact_dir, variables.MODEL_EVALUATION_DIR_NAME
+        )
+        self.report_file_path = os.path.join(self.model_evaluation_dir,
+                                             variables.MODEL_EVALUATION_REPORT_NAME)
+        self.change_threshold = variables.MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE
 
 class ModelRegistryConfig:
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):

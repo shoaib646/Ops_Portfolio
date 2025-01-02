@@ -37,7 +37,7 @@ class DataIngestion():
         try:
             self.data_ingestion_config = data_ingestion_config
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     def export_collection_as_df(self) -> pandas.DataFrame:
         try:
@@ -55,7 +55,7 @@ class DataIngestion():
             return df
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     def export_data2featurestore(self, dataframe:pd.DataFrame)-> pandas.DataFrame:
         try:
@@ -65,7 +65,7 @@ class DataIngestion():
             dataframe.to_csv(feature_store_path, index=False, header=True)
             return dataframe
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     def split_data(self, dataframe:pandas.DataFrame):
         try:
@@ -86,7 +86,7 @@ class DataIngestion():
             logging.info(f"Exported train and test file path.")
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     def initiate_data_ingestion(self):
         try:
@@ -101,5 +101,5 @@ class DataIngestion():
             return output
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 

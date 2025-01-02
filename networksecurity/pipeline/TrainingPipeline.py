@@ -34,7 +34,7 @@ class TrainingPipeline:
         self.__scehma_config = read_yaml_file(SCHEMA_FILE)
 
     # 1.
-    def start_data_ingestion(self) -> DataIngestionArtifact:
+    def start_data_ingestion(self) -> 'DataIngestionArtifact':
         try:
             self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
             logging.info("Starting data ingestion...")
@@ -75,7 +75,7 @@ class TrainingPipeline:
             return data_transformation_artifact
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     # 4.
     def model_trainer(self, LastArtifact:DataTransformationArtifact) -> 'ModelTrainingArtifact':
@@ -86,21 +86,25 @@ class TrainingPipeline:
             model_trainer_artifact = model_trainer.initiate_training()
             return model_trainer_artifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     # 5.
-    def start_model_evaluation(self):
+    def start_model_evaluation(self,data_validation_artifact:DataValidationArtifact, LastArtifact:ModelTrainingArtifact) -> 'ModelEvaluationArtifact':
         try:
-            pass
+            model_eval_config = ModelEvaluationConfig(training_pipeline_config=self.training_pipeline_config)
+            model_evaluation = ModelEvaluation(model_eval_config=model_eval_config, LastArtifact=LastArtifact, data_validation_artifact=data_validation_artifact)
+            model_eval_artifact = model_evaluation.initiate_evaluation()
+
+            return model_eval_artifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
     # 6.
     def start_model_registry(self):
         try:
             pass
         except Exception as e:
-            raise NetworkSecurityException(e, sys.exc_info()[2])
+            raise NetworkSecurityException(e, sys)
 
 
     def run_pipeline(self):
@@ -167,9 +171,13 @@ class TrainingPipeline:
                 model_trainer_artifact = self.model_trainer(LastArtifact=data_transformation_artifact)
                 logging.info("Model Training completed successfully.")
             else:
-                raise ValueError("Data Transformation artifact is invalid or missing.")
+                raise ValueError("Data Validation artifact is invalid or missing.")
 
-            print('Debug After training')
+            # Proceed to model_evaluation
+            if model_trainer_artifact:
+                model_eval_artifact = self.start_model_evaluation(LastArtifact=model_trainer_artifact,
+                                                                  data_validation_artifact=data_validation_artifact,
+                                                                  )
 
 
         except Exception as e:
