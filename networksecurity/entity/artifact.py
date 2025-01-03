@@ -45,4 +45,5 @@ class ModelEvaluationArtifact:
 
 @dataclass
 class ModelRegistryArtifact:
-    pass
+    saved_model_path: str
+    model_file_path: str

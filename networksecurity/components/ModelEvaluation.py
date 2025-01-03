@@ -4,6 +4,7 @@ import os, sys
 from networksecurity.entity.artifact import DataValidationArtifact, ModelTrainingArtifact, ModelEvaluationArtifact
 from networksecurity.entity.config import ModelEvaluationConfig
 from networksecurity.utils.ML.metric.classification_metric import get_classification_score
+from networksecurity.utils.ML.model.estimator import NetworkModel
 from networksecurity.utils.Main.utils import save_object, load_object, write_yaml_file
 from networksecurity.utils.ML.model.estimator import ModelResolver
 from networksecurity.constant.variables import TARGET_COL
@@ -13,7 +14,7 @@ import mlflow.sklearn
 
 
 class ModelEvaluation:
-    def __init__(self, model_eval_config: ModelEvaluationConfig,
+    def __init__(self, model_eval_config,
                  data_validation_artifact: DataValidationArtifact,
                  LastArtifact: ModelTrainingArtifact):
         try:
@@ -24,7 +25,7 @@ class ModelEvaluation:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
-    def initiate_evaluation(self) -> ModelEvaluationArtifact:
+    def initiate_model_evaluation(self) -> ModelEvaluationArtifact:
         try:
             valid_train_file_path = self.data_validation_artifact.valid_train_file_path
             valid_test_file_path = self.data_validation_artifact.valid_test_file_path
@@ -89,21 +90,22 @@ class ModelEvaluation:
 
             model_eval_report = model_evaluation_artifact.__dict__
 
+
+
             write_yaml_file(self.model_eval_config.report_file_path, model_eval_report)
             logging.info(f"Model evaluation artifact: {model_evaluation_artifact}")
 
-            # with mlflow.start_run():
-            #     f1_score = trained_metric.f1_score
-            #     precision_score = trained_metric.precision_score
-            #     recall_score = trained_metric.recall_score
-            #
-            #     mlflow.log_metric("f1_score", f1_score)
-            #     mlflow.log_metric("precision_score", precision_score)
-            #     mlflow.log_metric("recall_score", recall_score)
-            #
-            #     mlflow.sklearn.log_model(train_model, "model")
+            with mlflow.start_run():
+                f1_score = trained_metric.f1_score
+                precision_score = trained_metric.precision_score
+                recall_score = trained_metric.recall_score
+
+                mlflow.log_metric("f1_score", f1_score)
+                mlflow.log_metric("precision_score", precision_score)
+                mlflow.log_metric("recall_score", recall_score)
+
+                mlflow.sklearn.log_model(train_model, "model")
 
             return model_evaluation_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys)
-

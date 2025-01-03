@@ -12,7 +12,7 @@ from networksecurity.components.DataIngestion import DataIngestion
 from networksecurity.components.DataTransformation import DataTransformation
 from networksecurity.components.DataValidation import DataValidation
 from networksecurity.components.ModelEvaluation import ModelEvaluation
-from networksecurity.components.ModelRegistry import ModelRegistry
+from networksecurity.components.ModelRegistry import ModelRegister
 from networksecurity.components.ModelTraining import ModelTraining
 
 from networksecurity.entity.config import (TrainingPipelineConfig,DataIngestionConfig, DataTransformationConfig,
@@ -89,20 +89,36 @@ class TrainingPipeline:
             raise NetworkSecurityException(e, sys)
 
     # 5.
-    def start_model_evaluation(self,data_validation_artifact:DataValidationArtifact, LastArtifact:ModelTrainingArtifact) -> 'ModelEvaluationArtifact':
-        try:
-            model_eval_config = ModelEvaluationConfig(training_pipeline_config=self.training_pipeline_config)
-            model_evaluation = ModelEvaluation(model_eval_config=model_eval_config, LastArtifact=LastArtifact, data_validation_artifact=data_validation_artifact)
-            model_eval_artifact = model_evaluation.initiate_evaluation()
+    # def start_model_evaluation(self,data_validation_artifact:DataValidationArtifact, LastArtifact:ModelTrainingArtifact) -> 'ModelEvaluationArtifact':
+    #     try:
+    #         model_eval_config = ModelEvaluationConfig(training_pipeline_config=self.training_pipeline_config)
+    #         model_evaluation = ModelEvaluation(model_eval_config=model_eval_config, LastArtifact=LastArtifact)
+    #         model_eval_artifact = model_evaluation.initiate_evaluation()
+    #
+    #         return model_eval_artifact
+    #     except Exception as e:
+    #         raise NetworkSecurityException(e, sys)
 
+    def start_model_evaluation(self, data_validation_artifact: DataValidationArtifact,
+                               LastArtifact: ModelTrainingArtifact, ) -> 'ModelEvaluationArtifact':
+        try:
+            model_evaluation_config: ModelEvaluationConfig = ModelEvaluationConfig(
+                training_pipeline_config=self.training_pipeline_config)
+            model_eval = ModelEvaluation(model_evaluation_config, data_validation_artifact, LastArtifact)
+            model_eval_artifact = model_eval.initiate_model_evaluation()
+            print(model_eval_artifact)
             return model_eval_artifact
+
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
     # 6.
-    def start_model_registry(self):
+    def start_model_registry(self, LastArtifact:ModelEvaluationArtifact) -> 'ModelRegistryArtifact':
         try:
-            pass
+            model_registry_config = ModelRegistryConfig(training_pipeline_config=self.training_pipeline_config)
+            model_registry = ModelRegister(ModelRegisterConfig=model_registry_config, LastArtifact=LastArtifact)
+            model_registry_artifact = model_registry.initiate_model_register()
+            return model_registry_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
@@ -171,13 +187,23 @@ class TrainingPipeline:
                 model_trainer_artifact = self.model_trainer(LastArtifact=data_transformation_artifact)
                 logging.info("Model Training completed successfully.")
             else:
-                raise ValueError("Data Validation artifact is invalid or missing.")
+                raise ValueError("Data Tramsformation artifact is invalid or missing.")
 
             # Proceed to model_evaluation
             if model_trainer_artifact:
                 model_eval_artifact = self.start_model_evaluation(LastArtifact=model_trainer_artifact,
                                                                   data_validation_artifact=data_validation_artifact,
                                                                   )
+                logging.info("Model Evaluation completed successfully.")
+            else:
+                raise ValueError("Data Training artifact is invalid or missing.")
+            #
+            if model_eval_artifact:
+                model_registry_artifact = self.start_model_registry(LastArtifact=model_eval_artifact)
+                logging.info("Model Registry completed successfully.")
+            else:
+                raise ValueError("Model Evaluation artifact is invalid or missing.")
+
 
 
         except Exception as e:
