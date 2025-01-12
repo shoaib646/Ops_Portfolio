@@ -1,4 +1,4 @@
-# Ops_Portfolio
+# Capstone (Portfolio) Project
 
 ## **Objective**
 The objective of this project is to develop an end-to-end Machine Learning Operations (MLOps) pipeline focused on the domain of **Cybersecurity**. This pipeline leverages **AWS cloud services** for scalable storage and deployment, coupled with a comprehensive local development setup to facilitate experimentation and robust model training workflows.
