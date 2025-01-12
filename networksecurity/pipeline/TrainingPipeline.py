@@ -22,15 +22,21 @@ from networksecurity.entity.artifact import (DataIngestionArtifact, DataTransfor
                                              DataValidationArtifact,ModelEvaluationArtifact,ModelRegistryArtifact,
                                              ModelTrainingArtifact)
 
+from networksecurity.constant.variables import TRAINING_BUCKET_NAME, SAVED_MODEL_DIR
+from networksecurity.cloud.s3_syncer import S3Sync
+
 import os
 import sys
 
 
 class TrainingPipeline:
+    is_pipeline_running = False
+
 
     def __init__(self):
         self.data_ingestion_config = None
         self.training_pipeline_config = TrainingPipelineConfig()
+        self.s3_sync = S3Sync()
         self.__scehma_config = read_yaml_file(SCHEMA_FILE)
 
     # 1.
@@ -122,8 +128,25 @@ class TrainingPipeline:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
+    def sync_artifact_dir_to_s3(self) -> None:
+        try:
+            aws_bucket_url = f"s3://{TRAINING_BUCKET_NAME}/artifact/{self.training_pipeline_config.timestamp}"
+            self.s3_sync.sync_folder_to_s3(folder=self.training_pipeline_config.artifact_dir,
+                                           aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise NetworkSecurityException(e, sys)
 
-    def run_pipeline(self):
+    def sync_saved_model_dir_to_s3(self) -> None:
+        try:
+            aws_bucket_url = f"s3://{TRAINING_BUCKET_NAME}/{SAVED_MODEL_DIR}"
+            self.s3_sync.sync_folder_to_s3(folder = SAVED_MODEL_DIR,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise NetworkSecurityException(e,sys)
+
+    def run_pipeline(self) -> None:
+
+
+        '''
 
         try:
             # Initialize variables
@@ -205,7 +228,64 @@ class TrainingPipeline:
                 raise ValueError("Model Evaluation artifact is invalid or missing.")
 
 
+            TrainingPipeline.is_pipeline_running = False
+
+            self.sync_artifact_dir_to_s3()
+            self.sync_saved_model_dir_to_s3()
+
+
 
         except Exception as e:
             logging.error(f"Error in running the pipeline: {str(e)}")
+            raise NetworkSecurityException(e, sys)
+
+
+        '''
+
+
+        try:
+            data_ingestion_artifact = self.start_data_ingestion()
+
+            if data_ingestion_artifact:
+                data_validation_artifact = self.start_data_validation(LastArtifact=data_ingestion_artifact)
+                logging.info("Data Validation completed successfully.")
+            else:
+                raise ValueError("Data Ingestion artifact is invalid or missing.")
+
+                # Proceed to data Transformation
+            if data_validation_artifact:
+                data_transformation_artifact = self.start_data_transformation(LastArtifact=data_validation_artifact)
+                logging.info("Data Transformation completed successfully.")
+            else:
+                raise ValueError("Data Validation artifact is invalid or missing.")
+
+            print('Debug before training')
+
+            if data_transformation_artifact:
+                model_trainer_artifact = self.model_trainer(LastArtifact=data_transformation_artifact)
+                logging.info("Model Training completed successfully.")
+            else:
+                raise ValueError("Data Tramsformation artifact is invalid or missing.")
+
+            # Proceed to model_evaluation
+            if model_trainer_artifact:
+                model_eval_artifact = self.start_model_evaluation(LastArtifact=model_trainer_artifact,
+                                                                  data_validation_artifact=data_validation_artifact,
+                                                                  )
+                logging.info("Model Evaluation completed successfully.")
+            else:
+                raise ValueError("Data Training artifact is invalid or missing.")
+            #
+            if model_eval_artifact:
+                model_registry_artifact = self.start_model_registry(LastArtifact=model_eval_artifact)
+                logging.info("Model Registry completed successfully.")
+            else:
+                raise ValueError("Model Evaluation artifact is invalid or missing.")
+
+            TrainingPipeline.is_pipeline_running = False
+
+            self.sync_artifact_dir_to_s3()
+            self.sync_saved_model_dir_to_s3()
+
+        except Exception as e:
             raise NetworkSecurityException(e, sys)

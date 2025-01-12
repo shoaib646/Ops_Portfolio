@@ -3,6 +3,9 @@ import sys
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
+import socket
+
+from google.auth.environment_vars import AWS_ACCESS_KEY_ID
 
 from networksecurity.entity.artifact import DataIngestionArtifact
 
@@ -84,6 +87,12 @@ MODEL_EVALUATION_REPORT_NAME= "report.yaml"
 MODEL_PUSHER_DIR_NAME = "model_registry"
 MODEL_PUSHER_SAVED_MODEL_DIR = SAVED_MODEL_DIR
 
-TRAINING_BUCKET_NAME = "mynetworksecurity"
-PREDICTION_BUCKET_NAME = "my-network-datasource"
-PREDICTION_DIR="prediction"
+TRAINING_BUCKET_NAME = "urlsecuritybucket"
+PREDICTION_BUCKET_NAME = "my-url-datasource"
+
+
+HOSTNAME = socket.gethostbyname(socket.gethostname())
+PORT = 8000
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
