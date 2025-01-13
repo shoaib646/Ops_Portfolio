@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/e61e282d6c6845ef9c2c5cda84ecf2e7/artifacts
+end_time: 1736709142251
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e61e282d6c6845ef9c2c5cda84ecf2e7
+run_name: mysterious-ape-47
+run_uuid: e61e282d6c6845ef9c2c5cda84ecf2e7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1736709139306
+status: 3
+tags: []
+user_id: cruzai

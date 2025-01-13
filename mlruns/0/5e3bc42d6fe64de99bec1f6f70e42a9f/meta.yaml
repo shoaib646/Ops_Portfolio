@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/5e3bc42d6fe64de99bec1f6f70e42a9f/artifacts
+end_time: 1736708818523
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5e3bc42d6fe64de99bec1f6f70e42a9f
+run_name: lyrical-ant-360
+run_uuid: 5e3bc42d6fe64de99bec1f6f70e42a9f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1736708815771
+status: 3
+tags: []
+user_id: cruzai

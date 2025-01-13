@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/1935c9d67eac44818c84a850e7122d12/artifacts
+end_time: 1736711168238
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1935c9d67eac44818c84a850e7122d12
+run_name: treasured-ram-633
+run_uuid: 1935c9d67eac44818c84a850e7122d12
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1736711165591
+status: 3
+tags: []
+user_id: cruzai

@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/c2d47d5e1e3244c183296d6b677cba5d/artifacts
+end_time: 1736708623171
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c2d47d5e1e3244c183296d6b677cba5d
+run_name: carefree-bear-68
+run_uuid: c2d47d5e1e3244c183296d6b677cba5d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1736708618185
+status: 3
+tags: []
+user_id: cruzai

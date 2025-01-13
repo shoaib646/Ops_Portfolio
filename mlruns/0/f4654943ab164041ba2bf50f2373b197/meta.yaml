@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/f4654943ab164041ba2bf50f2373b197/artifacts
+end_time: 1736711100617
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f4654943ab164041ba2bf50f2373b197
+run_name: traveling-croc-778
+run_uuid: f4654943ab164041ba2bf50f2373b197
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1736711094880
+status: 3
+tags: []
+user_id: cruzai
