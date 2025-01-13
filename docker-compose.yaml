@@ -1,0 +1,15 @@
+#for executing multiple Docker Image Simultaneously
+
+version: "2"
+services:
+ application:
+    image: ${IMAGE_NAME}
+    container_name: sensor
+    ports:
+      - "8080:8080"
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${REGION_NAME}
+      - MONGO_DB_URL=${MONGO_URL}
+      - BUCKET_NAME=${S3_BUCKET_NAME}
