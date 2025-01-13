@@ -6,7 +6,6 @@ numpy
 scikit-learn
 -e .
 setuptools
-yaml
 pyyaml
 dill
 xgboost
