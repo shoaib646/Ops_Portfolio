@@ -14,7 +14,7 @@ with DAG(
         default_args={'retries': 2},
         # [END default_args]
         description='URL Security Prediction',
-        schedule_interval="@weekly",
+        schedule="@weekly",
         start_date=pendulum.datetime(2024, 9, 1, tz="UTC"),
         catchup=False,
         tags=['example'],
