@@ -14,7 +14,7 @@ with DAG(
         default_args={'retries': 2},
         # [END default_args]
         description='url security pipeline',
-        schedule_interval="@monthly",
+        schedule_interval="@weekly",
         start_date=pendulum.datetime(2025, 1, 13, tz="UTC"),
         catchup=False,
         tags=['example'],
@@ -25,10 +25,23 @@ with DAG(
         training_obj.run_pipeline()
 
 
+    # def sync_artifact_to_s3_bucket(**kwargs):
+    #     bucket_name = os.getenv('S3_BUCKET_NAME')
+    #     os.system(f"aws s3 sync /app/Artifacts s3://{bucket_name}/artifact")
+    #     os.system(f"aws s3 sync /app/saved_models s3://{bucket_name}/saved_models")
+
     def sync_artifact_to_s3_bucket(**kwargs):
-        bucket_name = os.getenv('S3_BUCKET_NAME')
-        os.system(f"aws s3 sync /app/Artifacts s3://{bucket_name}/artifact")
-        os.system(f"aws s3 sync /app/saved_models s3://{bucket_name}/saved_models")
+        bucket_name = os.getenv("S3_BUCKET_NAME")
+        if not bucket_name:
+            raise Exception("Environment variable 'S3_BUCKET_NAME' is not set.")
+
+        artifact_result = os.system(f"aws s3 sync /app/Artifacts s3://{bucket_name}/artifact")
+        if artifact_result != 0:
+            raise Exception("Failed to sync artifacts to S3.")
+
+        model_result = os.system(f"aws s3 sync /app/saved_models s3://{bucket_name}/saved_models")
+        if model_result != 0:
+            raise Exception("Failed to sync models to S3.")
 
 
     training_pipeline = PythonOperator(

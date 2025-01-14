@@ -20,11 +20,14 @@ with DAG(
         tags=['example'],
 ) as dag:
     def download_files(**kwargs):
-        bucket_name = "my-url-datasource"
+        bucket_name = os.getenv("S3_BUCKET_NAME", "urlsecuritybucket")
+
         input_dir = "/app/input_files"
         # creating directory
         os.makedirs(input_dir, exist_ok=True)
-        os.system(f"aws s3 sync s3://{bucket_name}/input_files /app/input_files")
+        result = os.system(f"aws s3 sync s3://{bucket_name}/input_files {input_dir}")
+        if result != 0:
+            raise Exception(f"Failed to sync files from s3://{bucket_name}/input_files")
 
 
     def batch_prediction(**kwargs):
@@ -36,9 +39,10 @@ with DAG(
 
 
     def sync_prediction_dir_to_s3_bucket(**kwargs):
-        bucket_name = "my-url-datasource"
-        # upload prediction folder to predictionfiles folder in s3 bucket
-        os.system(f"aws s3 sync /app/prediction s3://{bucket_name}/prediction_files")
+        bucket_name = os.getenv("S3_BUCKET_NAME","urlsecuritybucket")
+        result = os.system(f"aws s3 sync /app/prediction s3://{bucket_name}/prediction_files")
+        if result != 0:
+            raise Exception(f"Failed to sync predictions to s3://{bucket_name}/prediction_files")
 
 
     download_input_files = PythonOperator(
