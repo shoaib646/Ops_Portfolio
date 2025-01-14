@@ -91,6 +91,17 @@ jobs:
             -e "AWS_REGION=${{ secrets.REGION_NAME }}" \
             ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
+      - name: Start Airflow Scheduler and Webserver
+        run: |
+          # Install Apache Airflow if not pre-installed
+          pip install apache-airflow
+          export AIRFLOW_HOME=$GITHUB_WORKSPACE/airflow
+          mkdir -p $AIRFLOW_HOME/dags
+          airflow db init
+          nohup airflow scheduler > scheduler.log 2>&1 &
+          nohup airflow webserver -p 8080 > webserver.log 2>&1 &
+          echo "Airflow services started successfully."
+
       - name: Clean previous images and containers
         run: |
           docker system prune -f
