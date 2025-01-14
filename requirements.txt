@@ -1,18 +1,20 @@
 python-dotenv
-pymongo
-certifi
 pandas
 numpy
+pymongo
+certifi
+pymongo[srv]
 scikit-learn
--e .
-setuptools
-pyyaml
 dill
+pyyaml
 xgboost
-scipy
 fastapi
 uvicorn
 ipykernel
-apache-airflow
+apache-airflow==2.10.3
 mlflow
 dvc
+jinja2==3.1.5
+python-multipart
+
+-e .
