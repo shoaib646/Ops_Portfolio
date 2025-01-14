@@ -16,5 +16,4 @@ mlflow
 dvc
 jinja2==3.1.5
 python-multipart
-
 -e .
