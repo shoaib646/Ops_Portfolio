@@ -142,7 +142,7 @@ shoaib646-ops_portfolio/
   ```bash
   python main.py
   ```
-  Access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
+  <!-- Access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs). -->
 
 ---
 
@@ -183,6 +183,78 @@ shoaib646-ops_portfolio/
 - **Detailed Logging**: Comprehensive logs for each pipeline stage.
 
 ---
+
+## **About Data**
+
+The provided data appears to be a sample from a dataset used for phishing website detection. Each row in the dataset represents a website, and each column represents a feature or attribute of the website that can be used to determine whether it is legitimate or a phishing attempt. The last column, "Result," indicates whether the website is legitimate (1) or a phishing site (-1). Let's break down each feature:
+
+1. **having_IP_Address**: Indicates whether the URL contains an IP address. Phishing websites often use IP addresses instead of domain names. (-1 indicates presence of IP address, 1 indicates absence).
+
+2. **URL_Length**: The length of the URL. Longer URLs can be a sign of phishing. (1 indicates normal length, -1 indicates suspicious length).
+
+3. **Shortining_Service**: Indicates whether a URL shortening service is used. Phishers often use these services to hide the actual URL. (1 indicates no shortening service, -1 indicates use of shortening service).
+
+4. **having_At_Symbol**: Presence of "@" symbol in the URL. This is uncommon in legitimate URLs. (1 indicates absence, -1 indicates presence).
+
+5. **double_slash_redirecting**: Indicates whether the URL contains "//" after the protocol (http, https). (-1 indicates presence, 1 indicates absence).
+
+6. **Prefix_Suffix**: Indicates whether the domain name includes a hyphen. Phishers often use hyphens to create misleading domain names. (-1 indicates presence, 1 indicates absence).
+
+7. **having_Sub_Domain**: Number of subdomains in the URL. More subdomains can indicate phishing. (-1 indicates many subdomains, 1 indicates few or none).
+
+8. **SSLfinal_State**: Indicates the state of the SSL certificate. Legitimate sites usually have valid SSL certificates. (-1 indicates no SSL or invalid SSL, 1 indicates valid SSL).
+
+9. **Domain_registeration_length**: Length of time the domain has been registered. Phishing sites often have short registration periods. (-1 indicates short registration, 1 indicates long registration).
+
+10. **Favicon**: Indicates whether the favicon is loaded from the same domain. Phishing sites often use external favicons. (1 indicates same domain, -1 indicates different domain).
+
+11. **port**: Indicates whether the URL uses non-standard ports. Phishing sites may use unusual ports. (1 indicates standard ports, -1 indicates non-standard ports).
+
+12. **HTTPS_token**: Presence of "HTTPS" token in the domain part of the URL. Phishers may use this to trick users. (-1 indicates presence, 1 indicates absence).
+
+13. **Request_URL**: Indicates whether the objects (images, scripts, etc.) are loaded from the same domain. Phishing sites often load objects from different domains. (1 indicates same domain, -1 indicates different domains).
+
+14. **URL_of_Anchor**: Indicates whether the anchor tags in the HTML point to the same domain. Phishing sites often use external links. (-1 indicates many external links, 1 indicates few or none).
+
+15. **Links_in_tags**: Indicates whether the meta, script, and link tags point to the same domain. (1 indicates same domain, -1 indicates different domains).
+
+16. **SFH**: Server Form Handler. Indicates where the form data is submitted. Phishing sites often submit data to external domains. (-1 indicates external submission, 1 indicates internal submission).
+
+17. **Submitting_to_email**: Indicates whether the form submits data to an email address. Legitimate sites rarely do this. (-1 indicates presence, 1 indicates absence).
+
+18. **Abnormal_URL**: Indicates whether the URL is abnormal (e.g., not matching the domain name). (-1 indicates abnormal, 1 indicates normal).
+
+19. **Redirect**: Number of redirects. Phishing sites often use multiple redirects. (0 indicates no redirects, 1 indicates one redirect, -1 indicates multiple redirects).
+
+20. **on_mouseover**: Indicates whether the onmouseover event changes the status bar. Phishing sites often use this to hide the actual URL. (1 indicates absence, -1 indicates presence).
+
+21. **RightClick**: Indicates whether right-click is disabled. Phishing sites often disable right-click to prevent users from inspecting elements. (1 indicates enabled, -1 indicates disabled).
+
+22. **popUpWidnow**: Indicates whether pop-up windows are used. Phishing sites often use pop-ups. (1 indicates absence, -1 indicates presence).
+
+23. **Iframe**: Indicates whether iframes are used. Phishing sites often use iframes to hide malicious content. (1 indicates absence, -1 indicates presence).
+
+24. **age_of_domain**: Age of the domain. Older domains are usually more trustworthy. (-1 indicates young domain, 1 indicates old domain).
+
+25. **DNSRecord**: Indicates whether the DNS record is available. Phishing sites often have missing or incomplete DNS records. (-1 indicates missing, 1 indicates available).
+
+26. **web_traffic**: Indicates the amount of web traffic. Legitimate sites usually have more traffic. (-1 indicates low traffic, 1 indicates high traffic).
+
+27. **Page_Rank**: Google's PageRank of the website. Higher PageRank indicates a more trustworthy site. (-1 indicates low PageRank, 1 indicates high PageRank).
+
+28. **Google_Index**: Indicates whether the site is indexed by Google. Phishing sites are often not indexed. (-1 indicates not indexed, 1 indicates indexed).
+
+29. **Links_pointing_to_page**: Number of links pointing to the page. More links usually indicate a more legitimate site. (-1 indicates few links, 1 indicates many links).
+
+30. **Statistical_report**: Indicates whether the site is reported in statistical reports as phishing. (-1 indicates reported, 1 indicates not reported).
+
+31. **Result**: The final classification of the website. (-1 indicates phishing, 1 indicates legitimate).
+
+In the provided sample data, the values for each feature are given for a single website, and the "Result" column indicates that this website is classified as a phishing site (-1).
+
+
+
+
 
 ## **Future Work**
 - Implement real-time URL prediction using a deployed model.
