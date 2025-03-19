@@ -44,7 +44,7 @@ class NetworkDataExtractor:
             logging.info(f"Connected to MongoDB: {mongo_url}, DB: {db_name}, Collection: {collection_name}")
 
         except Exception as e:
-            raise NetworkSecurityException(f"Initialization error: {e}", sys.exc_info()[2])
+            raise NetworkSecurityException(f"Initialization error: {e}", sys)
 
     def csv2json(self) -> List[dict]:
         """
@@ -64,7 +64,7 @@ class NetworkDataExtractor:
             return list(json.loads(data.T.to_json()).values())
 
         except Exception as e:
-            raise NetworkSecurityException(f"CSV to JSON conversion error: {e}", sys.exc_info()[2])
+            raise NetworkSecurityException(f"CSV to JSON conversion error: {e}", sys)
 
     def pushdata2mongo(self, records: List[dict]) -> int:
         """
@@ -84,7 +84,7 @@ class NetworkDataExtractor:
             return inserted_count
         except BulkWriteError as bwe:
             logging.error(f"Bulk write error occurred: {bwe.details}")
-            raise NetworkSecurityException(f"Bulk write error: {bwe.details}", sys.exc_info()[2])
+            raise NetworkSecurityException(f"Bulk write error: {bwe.details}", sys)
 
         except Exception as e:
             logging.error("An error occurred while inserting records into MongoDB.")
@@ -97,6 +97,7 @@ if __name__ == "__main__":
         records = data_object.csv2json()
         no_of_records = data_object.pushdata2mongo(records)
     except Exception as e:
+        print(e)
         logging.error(f"An error occurred: {e}")
 
 

@@ -5,7 +5,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import socket
 
-from google.auth.environment_vars import AWS_ACCESS_KEY_ID
+# from google.auth.environment_vars import AWS_ACCESS_KEY_ID
 
 from networksecurity.entity.artifact import DataIngestionArtifact
 
@@ -16,7 +16,7 @@ load_dotenv()
 TARGET_COL = "Result"
 PIPELINE_NAME = "SecuredURLs"
 ARTIFACT_DIR:str= 'Artifacts'
-FILENAME:str="NetworkDataFormed.csv"
+FILENAME:str="NetworkData.csv"
 
 IngestionArtifactPath = "data_ingestion_artifact.pkl"
 
