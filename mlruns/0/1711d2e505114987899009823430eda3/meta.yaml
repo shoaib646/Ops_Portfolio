@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/1711d2e505114987899009823430eda3/artifacts
+end_time: 1743050873711
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1711d2e505114987899009823430eda3
+run_name: hilarious-quail-116
+run_uuid: 1711d2e505114987899009823430eda3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743050868569
+status: 3
+tags: []
+user_id: cruzai

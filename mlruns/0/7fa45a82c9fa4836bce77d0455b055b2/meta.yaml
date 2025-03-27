@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/7fa45a82c9fa4836bce77d0455b055b2/artifacts
+end_time: 1743051874102
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7fa45a82c9fa4836bce77d0455b055b2
+run_name: capricious-wren-374
+run_uuid: 7fa45a82c9fa4836bce77d0455b055b2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743051870072
+status: 3
+tags: []
+user_id: cruzai

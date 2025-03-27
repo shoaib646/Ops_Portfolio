@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/c3bc749e921043208327d219830053eb/artifacts
+end_time: 1743051780792
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c3bc749e921043208327d219830053eb
+run_name: classy-horse-15
+run_uuid: c3bc749e921043208327d219830053eb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743051775099
+status: 3
+tags: []
+user_id: cruzai

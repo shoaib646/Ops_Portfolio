@@ -21,6 +21,7 @@ import sys
 import os
 from networksecurity.constant import  variables
 
+
 load_dotenv()
 
 class NetworkDataExtractor:
@@ -99,5 +100,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
         logging.error(f"An error occurred: {e}")
-
 

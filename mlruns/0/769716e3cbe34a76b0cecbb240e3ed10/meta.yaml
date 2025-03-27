@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/769716e3cbe34a76b0cecbb240e3ed10/artifacts
+end_time: 1743049671160
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 769716e3cbe34a76b0cecbb240e3ed10
+run_name: entertaining-jay-592
+run_uuid: 769716e3cbe34a76b0cecbb240e3ed10
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743049666251
+status: 3
+tags: []
+user_id: cruzai

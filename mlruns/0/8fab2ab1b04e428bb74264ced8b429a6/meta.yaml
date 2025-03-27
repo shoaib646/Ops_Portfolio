@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/8fab2ab1b04e428bb74264ced8b429a6/artifacts
+end_time: 1743050802145
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8fab2ab1b04e428bb74264ced8b429a6
+run_name: rebellious-rook-317
+run_uuid: 8fab2ab1b04e428bb74264ced8b429a6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743050798148
+status: 3
+tags: []
+user_id: cruzai

@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/f7679a43f5664e5aa2d7be3e1cfb1d36/artifacts
+end_time: 1743047162941
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f7679a43f5664e5aa2d7be3e1cfb1d36
+run_name: salty-deer-733
+run_uuid: f7679a43f5664e5aa2d7be3e1cfb1d36
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743047158277
+status: 3
+tags: []
+user_id: cruzai

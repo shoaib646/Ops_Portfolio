@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/30defa854eac48088fd63250fe997273/artifacts
+end_time: 1743050349355
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 30defa854eac48088fd63250fe997273
+run_name: overjoyed-ram-844
+run_uuid: 30defa854eac48088fd63250fe997273
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743050342042
+status: 3
+tags: []
+user_id: cruzai

@@ -1,0 +1,15 @@
+artifact_uri: file:///media/%24USER/my_ssd/Porfolio/Ops_Portfolio/mlruns/0/3f8da832dbd648c1861a83b3e5e09c4a/artifacts
+end_time: 1743050680398
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3f8da832dbd648c1861a83b3e5e09c4a
+run_name: treasured-grub-596
+run_uuid: 3f8da832dbd648c1861a83b3e5e09c4a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1743050675296
+status: 3
+tags: []
+user_id: cruzai
