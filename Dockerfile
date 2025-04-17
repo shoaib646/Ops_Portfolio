@@ -15,37 +15,45 @@
 # CMD ["start.sh"]
 
 
-# Stage 1: Build (if needed for Python wheels or compiled dependencies)
+# Stage 1: Build dependencies (with layer caching)
 FROM python:3.10-slim-buster as builder
+
 WORKDIR /app
+
+# Copy only dependency files first for caching
+COPY pyproject.toml setup.py ./
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Stage 2: Runtime
+# Install build system and dependencies
+RUN pip install --upgrade pip && \
+    pip install --user --no-cache-dir -r requirements.txt
+
+# Stage 2: Runtime image
 FROM python:3.10-slim-buster
+
 WORKDIR /app
 
-# Copy only necessary files from builder
+# Copy installed dependencies from builder
 COPY --from=builder /root/.local /root/.local
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Copy application code (including your package)
 COPY . .
 
-# Ensure scripts are executable
-RUN chmod +x start.sh
+# Install local package in editable mode (requires setup.py/pyproject.toml)
+RUN pip install --no-deps -e .
 
-# Environment variables
+# Airflow setup
 ENV AIRFLOW_HOME="/app/airflow" \
-    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=1000 \
-    AIRFLOW__CORE__ENABLE_XCOM_PICKLING=True \
-    PATH="/root/.local/bin:${PATH}"
+    AIRFLOW__CORE__LOAD_EXAMPLES="false"
 
-# Initialize Airflow and create user (combine RUN commands to reduce layers)
 RUN airflow db init && \
     airflow users create \
-    -e cruzai.contact@gmail.com \
-    -f shoaib \
-    -l ahmed \
-    -p admin \
-    -r Admin \
-    -u admin
+    --username admin \
+    --firstname Shoaib \
+    --lastname Ahmed \
+    --role Admin \
+    --email cruzai.contact@gmail.com \
+    --password admin
 
 ENTRYPOINT ["/bin/sh", "start.sh"]
