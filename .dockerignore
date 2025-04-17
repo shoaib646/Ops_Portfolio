@@ -5,3 +5,8 @@ Notebook
 Dataset
 logs
 cybersecurity.egg-info
+
+.git
+__pycache__
+*.pyc
+.env
