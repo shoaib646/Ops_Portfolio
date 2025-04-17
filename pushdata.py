@@ -29,8 +29,10 @@ class NetworkDataExtractor:
     def __init__(self):
         try:
 
+
+
             mongo_url = os.environ.get("MONGO_URL")
-            csv_path = os.path.join("Dataset", variables.FILENAME)
+            csv_path = os.path.join("Ops_Portfolio/Dataset", variables.FILENAME)
             db_name = os.environ.get("DB_NAME")
             collection_name = os.environ.get("COLLECTION_NAME")
 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Security Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .upload-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 3rem;
+        }
+        .drag-drop-area {
+            border: 2px dashed {{ theme.secondary }};
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .drag-drop-area:hover {
+            background: rgba({{ theme.secondary|replace('#', '') }}, 0.1);
+        }
+        #fileError {
+            color: {{ theme.danger }};
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        #fileNameDisplay {
+            margin-top: 1rem;
+            font-weight: bold;
+            color: {{ theme.primary }};
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="upload-container">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-file-upload"></i> Security Analysis Upload
+            </h2>
+            
+            <form id="uploadForm" action="/analyze" method="post" enctype="multipart/form-data">
+                <div class="drag-drop-area" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: {{ theme.primary }};"></i>
+                    <h4>Drag & Drop or Click to Upload</h4>
+                    <p class="text-muted">CSV files containing URL security features</p>
+                    <input type="file" name="file" id="fileInput" hidden accept=".csv" required>
+                    <div id="fileNameDisplay"></div>
+                    <div id="fileError"></div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        <i class="fas fa-shield-alt"></i> Analyze for Threats
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileError = document.getElementById('fileError');
+        const uploadForm = document.getElementById('uploadForm');
+
+        // Handle click on drop zone
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    fileNameDisplay.textContent = `Selected: ${file.name}`;
+                    fileNameDisplay.style.display = 'block';
+                    fileError.textContent = '';
+                    fileError.style.display = 'none';
+                } else {
+                    fileError.textContent = 'Only CSV files are allowed';
+                    fileError.style.display = 'block';
+                    fileNameDisplay.style.display = 'none';
+                    fileInput.value = '';
+                }
+            }
+        });
+
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropZone.style.background = 'rgba({{ theme.secondary|replace('#', '') }}, 0.2)';
+        }
+
+        function unhighlight() {
+            dropZone.style.background = '';
+        }
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    fileInput.files = files;
+                    fileNameDisplay.textContent = `Selected: ${file.name}`;
+                    fileNameDisplay.style.display = 'block';
+                    fileError.textContent = '';
+                    fileError.style.display = 'none';
+                } else {
+                    fileError.textContent = 'Only CSV files are allowed';
+                    fileError.style.display = 'block';
+                    fileNameDisplay.style.display = 'none';
+                }
+            }
+        }
+
+        // Form validation
+        uploadForm.addEventListener('submit', (e) => {
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                fileError.textContent = 'Please select a file to upload';
+                fileError.style.display = 'block';
+                return false;
+            }
+            
+            const fileName = fileInput.files[0].name;
+            if (!fileName.toLowerCase().endsWith('.csv')) {
+                e.preventDefault();
+                fileError.textContent = 'Only CSV files are allowed';
+                fileError.style.display = 'block';
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+</body>
+</html>
