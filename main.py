@@ -17,7 +17,7 @@ from networksecurity.utils.ML.model.estimator import ModelResolver
 from networksecurity.constant.variables import SAVED_MODEL_DIR
 from networksecurity.utils.Main.utils import load_object
 from networksecurity.pipeline.TrainingPipeline import TrainingPipeline
-from networksecurity.constant.variables import  *
+from networksecurity.constant.variables import  *  
 
 app = FastAPI(title="PhishShield AI", description="MLOps for Cybersecurity URL Classification")
 templates = Jinja2Templates(directory="templates")
