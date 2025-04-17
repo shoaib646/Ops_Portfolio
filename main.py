@@ -1,5 +1,3 @@
-
-
 import os
 import sys
 import pandas as pd
@@ -23,7 +21,7 @@ app = FastAPI(title="PhishShield AI", description="MLOps for Cybersecurity URL C
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# CORS configuration
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,7 +30,7 @@ app.add_middleware(
     allow_credentials=True,
 )
 
-# Security theme colors
+
 THEME_COLORS = {
     "primary": "#008000",
     "secondary": "#5DA9E9",
@@ -58,44 +56,44 @@ async def upload_form(request: Request):
 async def analyze(request: Request, file: UploadFile = File(...)):
     try:
 
-         # Validate file was uploaded
+
         if not file.filename:
             raise NetworkSecurityException("No file uploaded", error_details="Please select a file before submitting")
             
-        # Validate file type
+
         if not file.filename.lower().endswith('.csv'):
             raise NetworkSecurityException("Invalid file type", error_details="Only CSV files are supported")
 
-        # Validate file type
+
         if not file.filename.endswith(".csv"):
             raise NetworkSecurityException("Only CSV files are allowed")
         
-        # Show processing status
+
         processing_template = templates.TemplateResponse("processing.html", {
             "request": request,
             "theme": THEME_COLORS,
             "filename": file.filename
         })
         
-        # Process file
+
         df = pd.read_csv(file.file)
         
-        # Model prediction
+
         model_resolver = ModelResolver(model_dir=SAVED_MODEL_DIR)
         model_path = model_resolver.get_best_model_path()
         model = load_object(file_path=model_path)
         
-        # Original prediction logic
+
         y_pred = model.predict(df)
         df['predicted_column'] = y_pred
         df['predicted_column'] = df['predicted_column'].replace(-1, 0)
         
-        # Add status labels with security icons
+
         df['Status'] = df['predicted_column'].apply(
             lambda x: "🛡️ Legitimate" if x == 0 else "🔥 Phishing Detected"
         )
         
-        # Generate interactive table
+
         table_html = df.iloc[:-1].to_html(
             classes="table table-striped table-bordered table-hover",
             index=False,
@@ -103,7 +101,7 @@ async def analyze(request: Request, file: UploadFile = File(...)):
             escape=False
         )
         
-        # Generate security statistics
+
         stats = {
             "total": len(df),
             "legitimate": len(df[df['predicted_column'] == 0]),
@@ -131,7 +129,7 @@ async def analyze(request: Request, file: UploadFile = File(...)):
 async def swagger_docs():
     return RedirectResponse(url="/docs")
 
-# Training endpoint (protected in production)
+
 @app.post("/train")
 async def train():
     try:
